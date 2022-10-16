@@ -16,12 +16,12 @@ class ZodiakController extends Controller
      */
     public function index()
     {
-        $cnt= Prediction::count();
-        if ($cnt >0) {
+        $cnt= Prediction::count();//Количестпо предсказаний в базе
+        if ($cnt >0) {//виводим начальную страницу
             $zodiaks = Zodiak::all();
 
             return view('index', compact('zodiaks'));
-        }else{
+        }else{//виводим страницу загрузки предсказаний
             return redirect()->route('load');
         }
 
@@ -36,17 +36,19 @@ class ZodiakController extends Controller
      */
     public function show(Request $request)
     {
-        $id= $request->input('id');
+        //вывод предсказаний
+        $id= $request->input('id'); //узнаем код знака зодиака
         if($id>0){
-            $cnt= ZodiakPrediction::where('zodiak','=',$id)->where('dates','=',date('Y-m-d'))->count();
-            if ($cnt == 0){
-                $cnt = Prediction::count();
-                $rand = random_int(1,$cnt);
+            $cnt= ZodiakPrediction::where('zodiak','=',$id)->where('dates','=',date('Y-m-d'))->count(); //есть ди предсказание на текущюю дату
+            if ($cnt == 0){ //есали нету
+                $cnt = Prediction::count();//узнаем количество предсказаний в базе
+                $rand = random_int(1,$cnt);//выбираем случайное предсказание
                 $cnt = Prediction::where('id','>',$rand)->whereNotIn('id', function ($query) {
                     $query->select('prediction')
                         ->from('zodiak_predictions')
                         ->where('dates', '=', date('Y-m-d'));
-                })->first();
+                })->first();//проверяем используется ли это предсказание сегодня
+                            //если нет то берем его, если да то берем следующее свободное за ним
                 $data = [];
 
                 $data[]=[
@@ -54,7 +56,7 @@ class ZodiakController extends Controller
                     'prediction' => $cnt->id,
                     'dates' =>date('Y-m-d'),
                 ];
-                \DB::table('zodiak_predictions')->insert($data);
+                \DB::table('zodiak_predictions')->insert($data);//записываем предсказание на текущую дату
             }
 
             $predict = Prediction::whereIn('id', function ($query) use ($id) {
@@ -62,7 +64,7 @@ class ZodiakController extends Controller
                         ->from('zodiak_predictions')
                         ->where('zodiak','=',$id)
                         ->where('dates', '=', date('Y-m-d'));
-                })->first();
+                })->first(); //выводим предсказание для нужного знака зодиака
             return $predict->name;
         }
 

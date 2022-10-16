@@ -14,18 +14,9 @@ class PredictionController extends Controller
      */
     public function index()
     {
-        return view('prediction');
+        return view('prediction');//страница загрузки предсказаний
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,67 +26,23 @@ class PredictionController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->isMethod('post')){
-            if($request->hasFile('files')) {
+        if($request->isMethod('post')){//проверяем метод запроса
+            if($request->hasFile('files')) {//проверяем есть ли в запросе элемент files в запросе
 
-                $file = $request->file('files');
-                $file->move(public_path() . '/path','prediction.txt');
-                $contents = File::get(public_path() . '/path/prediction.txt');
-                $contents =  explode(".", $contents);
+                $file = $request->file('files');//присваиваем имя файла
+                $file->move(public_path() . '/path','prediction.txt'); //сохраняем на сервере
+                $contents = File::get(public_path() . '/path/prediction.txt');//читаем файл с предсказаниями
+                $contents =  explode(".", $contents);//создаем из котекста масив
                 $predict = [];
                 foreach ($contents as $content){
-                    $predict[]=['name'=>$content];
+                    $predict[]=['name'=>$content];//создает обьектный масив
                 }
 
-                \DB::table('predictions')->truncate();
-                \DB::table('predictions')->insert($predict);
-                return redirect()->route('home');
+                \DB::table('predictions')->truncate();//очищаем таблицу с предсказаниями
+                \DB::table('predictions')->insert($predict);//вносим предсказания из файла
+                return redirect()->route('home');//переходим на начальную страницу
             }
         };
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
