@@ -16,9 +16,8 @@ return new class extends Migration
         Schema::create('zodiak_predictions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('zodiak')->references('id')->on('zodiaks');
-            $table->foreignId('prediction')->references('id')->on('predictions');;
+            $table->foreignId('prediction');
             $table->date('dates');
-            $table->timestamps();
         });
     }
 

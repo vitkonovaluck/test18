@@ -16,7 +16,7 @@ class PredictionSeeder extends Seeder
      */
     public function run()
     {
-       Prediction::factory()->count(300)->create();
+       //Prediction::factory()->count(300)->create();
 
     }
 }

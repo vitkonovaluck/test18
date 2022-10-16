@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ZodiakController::class,'index'])->name('home');
 Route::get('/show', [ZodiakController::class,'show'])->name('show');
+Route::get('/load', [PredictionController::class,'index'])->name('load');
+Route::post('/load', [PredictionController::class,'store'])->name('load');
